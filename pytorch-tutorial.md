@@ -169,3 +169,13 @@ These used `n_channels_1 = 6` and `n_channels_2 = 16`.
 After changing `n_channels_1 = 300` and `n_channels_2 = 300`, an epoch takes a little more than 3mins on CPU (186s and 187s for 2 epochs), while about 87 seconds on GPU (89s and 87s for 2 epochs). Considering the data loading overhead is at least (60s - 27s = 33s), the training speeds of GPU vs CPU is `(88-33) / 186 ~ 30%`. Now using 30% to the first experiment, then the data loading overhead becomes 60s - 9s = 51s, and putting this updated overhead to the 2nd experiment, the speeds comparison becomes `(88-51)/186 ~ 20%`. So the GPU is at least 5x faster (even this is an underestimate). Also this is using a single GPU. 
 
 //hl One thing to note is that even with the single GPU for training for 2 epochs about less than 3 mins in total, the laptop becomes very hot, and there were noises of things popping/cracking. So probably shouldn't use this laptop on GPU training for too long or too many GPUs. 
+
+One minor problem I couldn't solve was how to "mirror push" the pytorch tutorial repo to my private repo. The main reason is that the repo is too big (>5G), and there's various limitations on github. I tried using various ssh configs, as well as https, but couldn't get a success. Note that the direct fork from the public repo has to stay public (including my branches pushed to that fork). 
+
+//fix another thing is the author name / email, which is 
+Lichao Wang <lichaowang@Lichaos-MacBook-Pro.local>
+That's too much private info.
+
+`git config --global user.name "flyinggip"`
+`git config --global user.email "flyinggip@blank.org"`
+
