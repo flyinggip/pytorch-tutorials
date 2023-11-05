@@ -159,3 +159,13 @@ OK. Actually wrapping everything into a main program as said in the error msg he
 if __name__ == '__main__':
     main()
 ```
+
+## 20231105
+
+CPU training fine on cifar-10. Check GPU training (once ok, go to difusion modeling)
+Note that with CPU, each epoch takes a bit more than 27 seconds (27.66s and 27.23s for both epochs). Training data is 50k images split into batch_size 4 (so 12.5k batches). With a single mps GPU, it took much longer. Every epoch took about 1min (62s and 59s for 2 epochs). 
+These used `n_channels_1 = 6` and `n_channels_2 = 16`. 
+
+After changing `n_channels_1 = 300` and `n_channels_2 = 300`, an epoch takes a little more than 3mins on CPU (186s and 187s for 2 epochs), while about 87 seconds on GPU (89s and 87s for 2 epochs). Considering the data loading overhead is at least (60s - 27s = 33s), the training speeds of GPU vs CPU is `(88-33) / 186 ~ 30%`. Now using 30% to the first experiment, then the data loading overhead becomes 60s - 9s = 51s, and putting this updated overhead to the 2nd experiment, the speeds comparison becomes `(88-51)/186 ~ 20%`. So the GPU is at least 5x faster (even this is an underestimate). Also this is using a single GPU. 
+
+//hl One thing to note is that even with the single GPU for training for 2 epochs about less than 3 mins in total, the laptop becomes very hot, and there were noises of things popping/cracking. So probably shouldn't use this laptop on GPU training for too long or too many GPUs. 
