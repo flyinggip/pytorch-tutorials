@@ -55,6 +55,8 @@ We will do the following steps in order:
 
 Using ``torchvision``, it’s extremely easy to load CIFAR10.
 """
+import time
+
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -84,10 +86,10 @@ def main():
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                            download=True, transform=transform)
-    # testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-    #                                          shuffle=False, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-                                             shuffle=False)
+                                             shuffle=False, num_workers=2)
+    # testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
+    #                                          shuffle=False)
 
     classes = ('plane', 'car', 'bird', 'cat',
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -171,8 +173,9 @@ def main():
     # network and optimize.
 
     for epoch in range(2):  # loop over the dataset multiple times
-
+        print("Epoch {}...".format(epoch))
         running_loss = 0.0
+        epoch_start_time = time.time()
         for i, data in enumerate(trainloader, 0):
             # get the inputs; data is a list of [inputs, labels]
             inputs, labels = data
@@ -191,6 +194,9 @@ def main():
             if i % 2000 == 1999:    # print every 2000 mini-batches
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
                 running_loss = 0.0
+
+        epoch_end_time = time.time()
+        print('{} seconds'.format(epoch_end_time - epoch_start_time))
 
     print('Finished Training')
 
