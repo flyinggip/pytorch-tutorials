@@ -70,6 +70,47 @@ class Net(nn.Module):
 net = Net()
 print(net)
 
+# net11
+class Net11(nn.Module):
+
+    def __init__(self):
+        super(Net11, self).__init__()
+        # 1 input image channel, 6 output channels, 5x5 square convolution
+        # kernel
+        self.conv1 = nn.Conv2d(1, 6, 5)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+
+    def forward(self, x):
+        # Max pooling over a (2, 2) window
+        x = F.max_pool2d(F.relu(self.conv1(x)), (1, 1))
+        # If the size is a square, you can specify with a single number
+        x = F.max_pool2d(F.relu(self.conv2(x)), 1)
+        return x
+
+net11 = Net11()
+
+# Hook definition
+activation = {}
+
+
+def get_activation(name):
+    def hook(model, input, output):
+        activation[name] = output.detach()
+
+    return hook
+
+# hook registration
+## net
+net.conv1.register_forward_hook(get_activation('net_conv1'))
+net.conv2.register_forward_hook(get_activation('net_conv2'))
+net.fc1.register_forward_hook(get_activation('net_fc1'))
+net.fc2.register_forward_hook(get_activation('net_fc2'))
+net.fc3.register_forward_hook(get_activation('net_fc3'))
+
+## net11
+net11.conv1.register_forward_hook(get_activation('net11_conv1'))
+net11.conv2.register_forward_hook(get_activation('net11_conv2'))
+
 ########################################################################
 # You just have to define the ``forward`` function, and the ``backward``
 # function (where gradients are computed) is automatically defined for you
@@ -90,6 +131,8 @@ print(params[0].size())  # conv1's .weight
 input = torch.randn(1, 1, 32, 32)
 out = net(input)
 print(out)
+
+out11 = net11(input)
 
 ########################################################################
 # Zero the gradient buffers of all parameters and backprops with random
